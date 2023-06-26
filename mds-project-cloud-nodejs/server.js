@@ -47,7 +47,6 @@ app.get('/list', async (req, res) => {
           LastModified: obj.LastModified,
           ETag: obj.ETag,
           StorageClass: obj.StorageClass,
-          Owner: obj.Owner,
         };
       });
       res.send(objects);
