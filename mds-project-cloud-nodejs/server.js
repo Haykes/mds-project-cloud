@@ -38,8 +38,19 @@ app.get('/list', async (req, res) => {
   s3.listObjectsV2(params, (err, data) => {
     if (err) {
       console.log(err, err.stack);
+      res.status(500).send("Une erreur s'est produite lors de la récupération de la liste des objets du bucket");
     } else {
-      res.send(data);
+      const objects = data.Contents.map((obj) => {
+        return {
+          Key: obj.Key,
+          Size: obj.Size,
+          LastModified: obj.LastModified,
+          ETag: obj.ETag,
+          StorageClass: obj.StorageClass,
+          Owner: obj.Owner,
+        };
+      });
+      res.send(objects);
     }
   });
 });
