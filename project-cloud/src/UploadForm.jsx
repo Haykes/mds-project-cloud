@@ -5,9 +5,11 @@ import './App.css';
 function UploadForm() {
   const [file, setFile] = useState(null);
   const [uploadStatus, setUploadStatus] = useState("");
+  const [fileName, setFileName] = useState("Choisir un fichier");
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
+    setFileName(e.target.files[0] ? e.target.files[0].name : "Choisir un fichier");
   };
 
   const handleUpload = async (e) => {
@@ -27,7 +29,10 @@ function UploadForm() {
   return (
     <div className="upload-form">
       <form onSubmit={handleUpload}>
-        <input type="file" onChange={handleFileChange} />
+        <div className="form-control">
+          <input type="file" id="file-upload" onChange={handleFileChange} />
+          <label htmlFor="file-upload">{fileName}</label>
+        </div>
         <button type="submit">Upload</button>
       </form>
       {uploadStatus && <p>{uploadStatus}</p>}
