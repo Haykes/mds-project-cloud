@@ -12,6 +12,9 @@ body{
   background: rgba(255, 255, 255, 0.3); 
 }
 
+
+/* UPLOAD */
+
 .upload-form {
   display: flex;
   flex-direction: column;
@@ -54,4 +57,63 @@ body{
 .upload-form p {
   margin-top: 1rem;
   color: #007bff;
+}
+
+
+/* LIST */
+
+.file-list-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.file-list-container h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.file-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.file-item {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background-color: rgb(255, 255, 255,0.3);
+  border-radius: 5px;
+}
+
+.file-item p {
+  margin: 0;
+}
+
+.file-divider {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  border: none;
+  border-top: 1px solid #ccc;
+}
+
+.button-container {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+.file-button {
+  margin: 0 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.file-button:hover {
+  background-color: #0056b3;
 }
