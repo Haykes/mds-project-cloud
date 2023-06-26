@@ -5,10 +5,13 @@ const AWS = require('aws-sdk');
 const multer  = require('multer');
 const fs = require('fs');
 const upload = multer({ dest: 'uploads/' });
+const cors = require('cors'); // Importer le module CORS
 
 // Initialiser l'application Express
 const app = express();
 const port = 5000;
+
+app.use(cors());
 
 // Configure AWS avec votre accessKey, secretAccessKey et région
 const { ACCESS_KEY, SECRET_ACCESS_KEY, REGION } = process.env;
