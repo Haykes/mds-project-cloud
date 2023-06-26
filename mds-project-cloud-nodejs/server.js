@@ -8,7 +8,7 @@ const upload = multer({ dest: 'uploads/' });
 
 // Initialiser l'application Express
 const app = express();
-const port = 3000;
+const port = 5000;
 
 // Configure AWS avec votre accessKey, secretAccessKey et région
 const { ACCESS_KEY, SECRET_ACCESS_KEY, REGION } = process.env;
@@ -29,7 +29,7 @@ app.get('/', (req, res) => {
 // Route pour lister les éléments du bucket
 app.get('/list', async (req, res) => {
   const params = {
-    Bucket: 'BUCKET_NAME',
+    Bucket: 'ezytech-mds',
   };
 
   s3.listObjectsV2(params, (err, data) => {
@@ -46,8 +46,8 @@ app.post('/upload', upload.single('file'), (req, res) => {
   const fileContent = fs.readFileSync(req.file.path);
 
   const params = {
-    Bucket: 'BUCKET_NAME',
-    Key: req.file.filename, // Le nom du fichier qu'on enrengistre
+    Bucket: 'ezytech-mds',
+    Key: req.file.originalname, // Utiliser le nom d'origine du fichier
     Body: fileContent
   };
 
@@ -55,14 +55,15 @@ app.post('/upload', upload.single('file'), (req, res) => {
     if (err) {
       throw err;
     }
-    res.send("File uploaded successfully. " + data.Location);
+    res.send({message: "File uploaded successfully. " + data.Location});
   });
 });
+
 
 // Route pour télécharger un fichier du bucket
 app.get('/download/:filename', (req, res) => {
   const params = {
-    Bucket: 'BUCKET_NAME',
+    Bucket: 'ezytech-mds',
     Key: req.params.filename
   }
 
@@ -74,7 +75,7 @@ app.get('/download/:filename', (req, res) => {
 // Route pour supprimer un fichier du bucket
 app.delete('/delete/:filename', (req, res) => {
   const params = {
-    Bucket: 'BUCKET_NAME',
+    Bucket: 'ezytech-mds',
     Key: req.params.filename
   }
 

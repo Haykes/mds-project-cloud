@@ -20,7 +20,7 @@ function UploadForm() {
 
     try {
       const response = await axios.post("http://localhost:5000/upload", formData);
-      setUploadStatus(response.data.message); // Assume that API response contains a 'message' field
+      setUploadStatus(response.data.message); // modification ici, on extrait la propriété 'message' de la réponse
     } catch (error) {
       setUploadStatus(`Error: ${error.message}`);
     }
