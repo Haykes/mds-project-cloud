@@ -47,7 +47,6 @@ app.get('/list', async (req, res) => {
           LastModified: obj.LastModified,
           ETag: obj.ETag,
           StorageClass: obj.StorageClass,
-          Owner: obj.Owner,
         };
       });
       res.send(objects);
@@ -74,30 +73,68 @@ app.post('/upload', upload.single('file'), (req, res) => {
 });
 
 
-// Route pour télécharger un fichier du bucket
-app.get('/download/:filename', (req, res) => {
+// // Route pour télécharger un fichier du bucket
+// app.get('/download/:filename', (req, res) => {
+//   const params = {
+//     Bucket: 'ezytech-mds',
+//     Key: req.params.filename
+//   }
+
+//   res.attachment(req.params.filename);
+//   const fileStream = s3.getObject(params).createReadStream();
+//   fileStream.pipe(res);
+// });
+
+// // Route pour supprimer un fichier du bucket
+// app.delete('/delete/:filename', (req, res) => {
+//   const params = {
+//     Bucket: 'ezytech-mds',
+//     Key: req.params.filename
+//   }
+
+//   s3.deleteObject(params, function(err, data) {
+//     if (err) console.log(err, err.stack);  
+//     else     console.log("Bien suppr je suis content");
+//   });
+// });
+
+
+
+app.get("/download/:fileName", (req, res) => {
+  const fileName = req.params.fileName;
   const params = {
-    Bucket: 'ezytech-mds',
-    Key: req.params.filename
-  }
+    Bucket: process.env.AWS_BUCKET_NAME,
+    Key: fileName,
+  };
 
-  res.attachment(req.params.filename);
-  const fileStream = s3.getObject(params).createReadStream();
-  fileStream.pipe(res);
-});
-
-// Route pour supprimer un fichier du bucket
-app.delete('/delete/:filename', (req, res) => {
-  const params = {
-    Bucket: 'ezytech-mds',
-    Key: req.params.filename
-  }
-
-  s3.deleteObject(params, function(err, data) {
-    if (err) console.log(err, err.stack);  
-    else     console.log("Bien suppr je suis content");
+  s3.getObject(params, (err, data) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send(err);
+    } else {
+      res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
+      res.send(data.Body);
+    }
   });
 });
+
+app.delete("/delete/:fileName", (req, res) => {
+  const fileName = req.params.fileName;
+  const params = {
+    Bucket: process.env.AWS_BUCKET_NAME,
+    Key: fileName,
+  };
+
+  s3.deleteObject(params, (err, data) => {
+    if (err) {
+      console.log(err);
+      res.status(500).send(err);
+    } else {
+      res.sendStatus(200);
+    }
+  });
+});
+
 
 // Démarrer le serveur
 app.listen(port, () => {
