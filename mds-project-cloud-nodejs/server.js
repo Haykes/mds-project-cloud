@@ -73,33 +73,6 @@ app.post('/upload', upload.single('file'), (req, res) => {
 });
 
 
-// // Route pour télécharger un fichier du bucket
-// app.get('/download/:filename', (req, res) => {
-//   const params = {
-//     Bucket: 'ezytech-mds',
-//     Key: req.params.filename
-//   }
-
-//   res.attachment(req.params.filename);
-//   const fileStream = s3.getObject(params).createReadStream();
-//   fileStream.pipe(res);
-// });
-
-// // Route pour supprimer un fichier du bucket
-// app.delete('/delete/:filename', (req, res) => {
-//   const params = {
-//     Bucket: 'ezytech-mds',
-//     Key: req.params.filename
-//   }
-
-//   s3.deleteObject(params, function(err, data) {
-//     if (err) console.log(err, err.stack);  
-//     else     console.log("Bien suppr je suis content");
-//   });
-// });
-
-
-
 app.get("/download/:fileName", (req, res) => {
   const fileName = req.params.fileName;
   const params = {
