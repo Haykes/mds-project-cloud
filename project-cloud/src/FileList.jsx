@@ -4,18 +4,43 @@ import "./App.css";
 
 function FileList() {
   const [fileList, setFileList] = useState([]);
+  const [bucketList, setBucketList] = useState([]);
+  const [selectedBucket, setSelectedBucket] = useState("");
 
   useEffect(() => {
-    fetchFileList();
+    fetchBucketList();
   }, []);
 
-  const fetchFileList = async () => {
+  useEffect(() => {
+    if (selectedBucket) {
+      fetchFileList(selectedBucket);
+    }
+  }, [selectedBucket]);
+
+  const fetchBucketList = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/list");
+      const response = await axios.get("http://localhost:5000/buckets");
+      setBucketList(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchFileList = async (bucketName) => {
+    try {
+      const response = await axios.get(`http://localhost:5000/list?bucket=${bucketName}`);
       setFileList(response.data);
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleBucketChange = (e) => {
+    setSelectedBucket(e.target.value);
+  };
+
+  const handleOK = () => {
+    fetchFileList(selectedBucket);
   };
 
   const handleDownload = async (fileName) => {
@@ -38,7 +63,7 @@ function FileList() {
   const handleDelete = async (fileName) => {
     try {
       await axios.delete(`http://localhost:5000/delete/${fileName}`);
-      fetchFileList();
+      fetchFileList(selectedBucket);
     } catch (error) {
       console.log(error);
     }
@@ -47,6 +72,20 @@ function FileList() {
   return (
     <div className="file-list-container">
       <h2>Liste des fichiers</h2>
+      <div>
+        <label>Sélectionner un bucket :</label>
+        <select value={selectedBucket} onChange={handleBucketChange}>
+          <option value="">Sélectionner un Bucket</option>
+          {bucketList.map((bucket) => (
+            <option value={bucket} key={bucket}>
+              {bucket}
+            </option>
+          ))}
+        </select>
+        <button className="file-button"  onClick={handleOK} disabled={!selectedBucket}>
+          OK
+        </button>
+      </div>
       {fileList.length > 0 ? (
         <ul className="file-list">
           {fileList.map((file) => (
@@ -59,8 +98,12 @@ function FileList() {
               <p>Propriétaire : {file.Owner}</p>
               <hr className="file-divider" />
               <div className="button-container">
-                <button className="file-button" onClick={() => handleDownload(file.Key)}>Télécharger</button>
-                <button className="file-button" onClick={() => handleDelete(file.Key)}>Supprimer</button>
+                <button className="file-button" onClick={() => handleDownload(file.Key)}>
+                  Télécharger
+                </button>
+                <button className="file-button" onClick={() => handleDelete(file.Key)}>
+                  Supprimer
+                </button>
               </div>
             </li>
           ))}

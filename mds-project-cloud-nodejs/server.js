@@ -31,8 +31,14 @@ app.get('/', (req, res) => {
 
 // Route pour lister les éléments du bucket
 app.get('/list', async (req, res) => {
+  const bucketName = req.query.bucket;
+
+  if (!bucketName) {
+    return res.status(400).send('Veuillez fournir un nom de bucket valide.');
+  }
+
   const params = {
-    Bucket: AWS_BUCKET_NAME,
+    Bucket: bucketName,
   };
 
   s3.listObjectsV2(params, (err, data) => {
@@ -56,22 +62,27 @@ app.get('/list', async (req, res) => {
 });
 
 // Route pour uploader un fichier au bucket
-app.post('/upload', upload.single('file'), (req, res) => {
+app.post('/upload/:bucketName', upload.single('file'), (req, res) => {
+  const bucketName = req.params.bucketName;
   const fileContent = fs.readFileSync(req.file.path);
 
   const params = {
-    Bucket: AWS_BUCKET_NAME,
-    Key: req.file.originalname, // Utiliser le nom d'origine du fichier
+    Bucket: bucketName, // Utiliser le nom du bucket sélectionné
+    Key: req.file.originalname,
     Body: fileContent
   };
 
   s3.upload(params, function(err, data) {
     if (err) {
-      throw err;
+      console.log(err);
+      res.status(500).send(err);
+    } else {
+      res.send({ message: "File uploaded successfully. " + data.Location });
     }
-    res.send({ message: "File uploaded successfully. " + data.Location });
   });
 });
+
+
 
 // Route pour télécharger un fichier du bucket
 app.get('/download/:fileName', (req, res) => {
@@ -109,6 +120,22 @@ app.delete('/delete/:fileName', (req, res) => {
     }
   });
 });
+
+// Route pour récupérer la liste des Buckets accessibles
+app.get('/buckets', (req, res) => {
+  const s3 = new AWS.S3();
+
+  s3.listBuckets((err, data) => {
+    if (err) {
+      console.log(err, err.stack);
+      res.status(500).send("Une erreur s'est produite lors de la récupération de la liste des Buckets");
+    } else {
+      const buckets = data.Buckets.map((bucket) => bucket.Name);
+      res.send(buckets);
+    }
+  });
+});
+
 
 // Démarrer le serveur
 app.listen(port, () => {
