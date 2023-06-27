@@ -18,32 +18,6 @@ function FileList() {
     }
   };
 
-  const handleDownload = async (fileName) => {
-    try {
-      const response = await axios.get(`http://localhost:5000/download/${fileName}`, {
-        responseType: "blob",
-      });
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", fileName);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleDelete = async (fileName) => {
-    try {
-      await axios.delete(`http://localhost:5000/delete/${fileName}`);
-      fetchFileList();
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   return (
     <div className="file-list-container">
       <h2>Liste des fichiers</h2>
@@ -58,8 +32,8 @@ function FileList() {
               <p>Classe de stockage : {file.StorageClass}</p>
               <hr className="file-divider" />
               <div className="button-container">
-                <button className="file-button" onClick={() => handleDownload(file.Key)}>Télécharger</button>
-                <button className="file-button" onClick={() => handleDelete(file.Key)}>Supprimer</button>
+                <button className="file-button">Bouton 1</button>
+                <button className="file-button">Bouton 2</button>
               </div>
             </li>
           ))}

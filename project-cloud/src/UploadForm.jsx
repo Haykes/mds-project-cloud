@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import './App.css';
 
@@ -21,24 +21,10 @@ function UploadForm() {
     try {
       const response = await axios.post("http://localhost:5000/upload", formData);
       setUploadStatus(response.data.message); // modification ici, on extrait la propriété 'message' de la réponse
-      fetchFileList(); // Actualiser la liste des fichiers après l'upload
     } catch (error) {
       setUploadStatus(`Error: ${error.message}`);
     }
   };
-
-  const fetchFileList = async () => {
-    try {
-      const response = await axios.get("http://localhost:5000/list");
-      setFileList(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    fetchFileList();
-  }, []); // Appeler fetchFileList une seule fois au montage initial du composant
 
   return (
     <div className="upload-form">
