@@ -30,6 +30,7 @@ function FileList() {
               <p>Dernière modification : {file.LastModified}</p>
               <p>ETag : {file.ETag}</p>
               <p>Classe de stockage : {file.StorageClass}</p>
+              <p>Propriétaire : {file.Owner}</p>
               <hr className="file-divider" />
               <div className="button-container">
                 <button className="file-button">Bouton 1</button>
